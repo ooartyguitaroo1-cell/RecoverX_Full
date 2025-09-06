@@ -1,3 +1,5 @@
+mkdir -p .github/workflows
+cat > .github/workflows/android.yml <<'YAML'
 name: Build Debug APK
 
 on:
@@ -8,37 +10,68 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Java 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install required SDK packages
+      - name: Wipe Gradle caches
         run: |
-          sdkmanager --install \
-            "platforms;android-33" \
-            "build-tools;34.0.0" \
+          rm -rf ~/.gradle/caches
+          rm -rf ~/.gradle/daemon
+
+      - name: Ensure Android SDK + accept licenses
+        env:
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+          ANDROID_HOME: /usr/local/lib/android/sdk
+        run: |
+          yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" \
             "platform-tools" \
-            "cmdline-tools;latest"
-          yes | sdkmanager --licenses
+            "cmdline-tools;latest" \
+            "build-tools;34.0.0" \
+            "platforms;android-34"
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+      - name: Clean
+        run: ./gradlew clean --no-daemon
 
-      - name: Upload APK artifact
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug --stacktrace --info --no-daemon
+
+      - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: RecoverX-Debug-APK
+          name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn
+
+      - name: Upload build reports (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-reports
+          path: |
+            **/build/reports/**
+            **/build/outputs/logs/**
+            **/build/outputs/mapping/**
+            **/build/outputs/apk/**
+          if-no-files-found: ignore
+YAML
+
+git add .github/workflows/android.yml
+git commit -m "ci: overwrite workflow to build APK"
+git push -u origin main
