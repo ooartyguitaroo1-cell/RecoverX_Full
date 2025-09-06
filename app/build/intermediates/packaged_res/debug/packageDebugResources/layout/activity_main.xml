@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btnPick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="เลือกโฟลเดอร์ (OTG/Storage)"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+            <CheckBox
+                android:id="@+id/cbImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="ภาพ"/>
+            <CheckBox
+                android:id="@+id/cbVideos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:layout_marginStart="16dp"
+                android:text="วิดีโอ"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnScan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="สแกนไฟล์ (อ่านอย่างเดียว)"
+            android:layout_marginTop="12dp"/>
+
+        <Button
+            android:id="@+id/btnCopy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="คัดลอกไฟล์ที่พบ (ปลอดภัย)"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnRepair"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ซ่อมไฟล์ที่คาดว่าเสีย (ทดลอง)"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:paddingTop="12dp"
+            android:textSize="13sp"/>
+    </LinearLayout>
+</ScrollView>

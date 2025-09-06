@@ -1,0 +1,11 @@
+R_DEF: Internal format may change without notice
+local
+id btnCopy
+id btnPick
+id btnRepair
+id btnScan
+id cbImages
+id cbVideos
+id tvLog
+layout activity_main
+string app_name
